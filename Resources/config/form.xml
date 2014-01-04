@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="dcs_form_select_city_form_field.form.select_city.class">DCS\Form\SelectCityFormFieldBundle\Form\Type\SelectCityFormType</parameter>
+    </parameters>
+
+    <services>
+        <service id="dcs_form_select_city_form_field.form.select_city" class="%dcs_form_select_city_form_field.form.select_city.class%">
+            <tag name="form.type" alias="select_city" />
+        </service>
+    </services>
+
+</container>

@@ -1,0 +1,89 @@
+<?php
+
+namespace DCS\AddressBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="DCS\AddressBundle\Repository\CityRepository")
+ * @ORM\Table(name="cities")
+ */
+class City
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(name="country_code", type="string", length=2)
+     */
+    protected $countryCode;
+
+    /**
+     * @ORM\Column(name="state_code", type="string", length=20)
+     */
+    protected $stateCode;
+
+    /**
+     * @ORM\Column(name="city_name", type="string", nullable=false)
+     */
+    protected $cityName;
+
+    /**
+     * @ORM\Column(name="timezone_id", type="string", nullable=false)
+     */
+    protected $timezoneId;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get countryCode
+     *
+     * @return string
+     */
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
+
+    /**
+     * Get stateCode
+     *
+     * @return string
+     */
+    public function getStateCode()
+    {
+        return $this->stateCode;
+    }
+
+    /**
+     * Get cityName
+     *
+     * @return string
+     */
+    public function getCityName()
+    {
+        return $this->cityName;
+    }
+
+    /**
+     * Get timezoneId
+     *
+     * @return string
+     */
+    public function getTimezoneId()
+    {
+        return $this->timezoneId;
+    }
+}

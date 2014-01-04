@@ -1,0 +1,59 @@
+<?php
+
+namespace DCS\Form\SelectCityFormFieldBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="DCS\Form\SelectCityFormFieldBundle\Repository\CountryRepository")
+ * @ORM\Table(name="countries")
+ */
+class Country
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(name="country_code", type="string", length=2)
+     */
+    protected $countryCode;
+
+    /**
+     * @ORM\Column(name="country_name", type="string", nullable=false)
+     */
+    protected $countryName;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get countryCode
+     *
+     * @return string
+     */
+    public function getCountryCode()
+    {
+        return $this->countryCode;
+    }
+
+    /**
+     * Get countryName
+     *
+     * @return string
+     */
+    public function getCountryName()
+    {
+        return $this->countryName;
+    }
+}
