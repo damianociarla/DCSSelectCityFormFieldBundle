@@ -3,7 +3,13 @@
     {{ form_widget(form) }}
     <script type="text/javascript">
     window.onload = function () {
-        window.select_city_instance.push(new window.select_city('{{ form.country.vars.id }}', '{{ form.state.vars.id }}', '{{ form.city.vars.id }}'));
+        if (window.select_region_base_url === null) {
+            window.select_region_base_url = '{{ path("dcs_select_city_form_field_api_regions", {'countryId': 'countryId'}) }}';
+        }
+        if (window.select_city_base_url === null) {
+            window.select_city_base_url = '{{ path("dcs_select_city_form_field_api_cities", {'regionId': 'regionId'}) }}';
+        }
+        window.select_city_instance.push(new window.select_city('{{ form.country.vars.id }}', '{{ form.region.vars.id }}', '{{ form.city.vars.id }}'));
     }
     </script>
 {% endspaceless %}

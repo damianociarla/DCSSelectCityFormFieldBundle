@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Doctrine\ORM\AbstractQuery;
 
 class ApiController extends Controller
 {
@@ -13,40 +14,30 @@ class ApiController extends Controller
     {
         $this->checkSecurity();
 
-        $data = $this->getEntityManager()->getRepository('DCSFormSelectCityFormFieldBundle:Country')->findAllToArray();
+        $data = $this->get('dcs_select_city_form_field.manager.country')->findAll(AbstractQuery::HYDRATE_ARRAY);
         return $this->serialize($data);
     }
 
-    public function statesListAction($countryId)
+    public function regionsListAction($countryId)
     {
         $this->checkSecurity();
-        $em = $this->getEntityManager();
 
-        if (null === $country = $em->find('DCSFormSelectCityFormFieldBundle:Country', $countryId))
+        if (null === $country = $this->get('dcs_select_city_form_field.manager.country')->find($countryId))
             throw new NotFoundHttpException('Country not found');
 
-        $data = $em->getRepository('DCSFormSelectCityFormFieldBundle:State')->findAllToArray($countryId);
+        $data = $this->get('dcs_select_city_form_field.manager.region')->findAllByCountryId($countryId, AbstractQuery::HYDRATE_ARRAY);
         return $this->serialize($data);
     }
 
-    public function citiesListAction($stateId)
+    public function citiesListAction($regionId)
     {
         $this->checkSecurity();
-        $em = $this->getEntityManager();
 
-        if (null === $state = $em->find('DCSFormSelectCityFormFieldBundle:State', $stateId))
-            throw new NotFoundHttpException('State not found');
+        if (null === $region = $this->get('dcs_select_city_form_field.manager.region')->find($regionId))
+            throw new NotFoundHttpException('Region not found');
 
-        $data = $em->getRepository('DCSFormSelectCityFormFieldBundle:City')->findAllToArray($stateId);
+        $data = $this->get('dcs_select_city_form_field.manager.city')->findAllByRegionId($regionId, AbstractQuery::HYDRATE_ARRAY);
         return $this->serialize($data);
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityManager
-     */
-    private function getEntityManager()
-    {
-        return $this->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -56,15 +47,20 @@ class ApiController extends Controller
      */
     private function checkSecurity()
     {
-        $role = $this->container->getParameter('dcs_form_select_city_form_field.api_security');
+        $role = $this->container->getParameter('dcs_select_city_form_field.api_security');
+        $securityContext = $this->get('security.context');
+        $token = $securityContext->getToken();
 
-        if (!$this->get('security.context')->isGranted($role))
+        if (null === $token && 'IS_AUTHENTICATED_ANONYMOUSLY' != $role)
+            throw new AccessDeniedHttpException('You cannot access to this resource');
+
+        if (null !== $token && !$securityContext->isGranted($role))
             throw new AccessDeniedHttpException('You cannot access to this resource');
     }
 
     /**
      * Serialize the array data to json Response
-     * 
+     *
      * @param array $object
      * @return \Symfony\Component\HttpFoundation\Response
      */

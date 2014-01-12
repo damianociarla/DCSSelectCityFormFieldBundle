@@ -4,17 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="dcs_form_select_city_form_field_api_countries" pattern="/api/countries">
+    <route id="dcs_select_city_form_field_api_countries" pattern="/api/countries">
         <default key="_controller">DCSFormSelectCityFormFieldBundle:Api:countriesList</default>
         <option key="expose">true</option>
     </route>
 
-    <route id="dcs_form_select_city_form_field_api_states" pattern="/api/states/{countryId}">
-        <default key="_controller">DCSFormSelectCityFormFieldBundle:Api:statesList</default>
+    <route id="dcs_select_city_form_field_api_regions" pattern="/api/regions/{countryId}">
+        <default key="_controller">DCSFormSelectCityFormFieldBundle:Api:regionsList</default>
         <option key="expose">true</option>
     </route>
 
-    <route id="dcs_form_select_city_form_field_api_cities" pattern="/api/cities/{stateId}">
+    <route id="dcs_select_city_form_field_api_cities" pattern="/api/cities/{regionId}">
         <default key="_controller">DCSFormSelectCityFormFieldBundle:Api:citiesList</default>
         <option key="expose">true</option>
     </route>

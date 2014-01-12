@@ -5,27 +5,27 @@ namespace DCS\Form\SelectCityFormFieldBundle\Model;
 class SelectData
 {
     /**
-     * @var \DCS\Form\SelectCityFormFieldBundle\Entity\Country
+     * @var CountryInterface
      */
     protected $country;
 
     /**
-     * @var \DCS\Form\SelectCityFormFieldBundle\Entity\State
+     * @var RegionInterface
      */
-    protected $state;
+    protected $region;
 
     /**
-     * @var \DCS\Form\SelectCityFormFieldBundle\Entity\City
+     * @var CityInterface
      */
     protected $city;
 
     /**
      * Set country
      *
-     * @param \DCS\Form\SelectCityFormFieldBundle\Entity\Country $country
+     * @param CountryInterface $country
      * @return SelectData
      */
-    public function setCountry(\DCS\Form\SelectCityFormFieldBundle\Entity\Country $country = null)
+    public function setCountry(CountryInterface $country = null)
     {
         $this->country = $country;
 
@@ -35,7 +35,7 @@ class SelectData
     /**
      * Get country
      *
-     * @return \DCS\Form\SelectCityFormFieldBundle\Entity\Country
+     * @return CountryInterface
      */
     public function getCountry()
     {
@@ -43,35 +43,35 @@ class SelectData
     }
 
     /**
-     * Set state
+     * Set region
      *
-     * @param \DCS\Form\SelectCityFormFieldBundle\Entity\State $state
+     * @param RegionInterface $region
      * @return SelectData
      */
-    public function setState(\DCS\Form\SelectCityFormFieldBundle\Entity\State $state = null)
+    public function setRegion(RegionInterface $region = null)
     {
-        $this->state = $state;
+        $this->region = $region;
 
         return $this;
     }
 
     /**
-     * Get state
+     * Get region
      *
-     * @return \DCS\Form\SelectCityFormFieldBundle\Entity\State
+     * @return RegionInterface
      */
-    public function getState()
+    public function getRegion()
     {
-        return $this->state;
+        return $this->region;
     }
 
     /**
      * Set city
      *
-     * @param \DCS\Form\SelectCityFormFieldBundle\Entity\City $city
+     * @param CityInterface $city
      * @return SelectData
      */
-    public function setCity(\DCS\Form\SelectCityFormFieldBundle\Entity\City $city = null)
+    public function setCity(CityInterface $city = null)
     {
         $this->city = $city;
 
@@ -81,7 +81,7 @@ class SelectData
     /**
      * Get city
      *
-     * @return \DCS\Form\SelectCityFormFieldBundle\Entity\City
+     * @return CityInterface
      */
     public function getCity()
     {

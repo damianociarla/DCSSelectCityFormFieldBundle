@@ -8,26 +8,52 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-use Doctrine\ORM\EntityRepository;
-use DCS\Form\SelectCityFormFieldBundle\Model\SelectData;
-use DCS\Form\SelectCityFormFieldBundle\Entity\Country;
-use DCS\Form\SelectCityFormFieldBundle\Entity\State;
+use DCS\Form\SelectCityFormFieldBundle\Model;
 
 class SelectCityFormType extends AbstractType
 {
+    /**
+     * @var Model\CountryManagerInterface
+     */
+    protected $countryManager;
+
+    /**
+     * @var Model\RegionManagerInterface
+     */
+    protected $regionManager;
+
+    /**
+     * @var Model\CityManagerInterface
+     */
+    protected $cityManager;
+
+    public function __construct(
+        Model\CountryManagerInterface $countryManager,
+        Model\RegionManagerInterface $regionManager,
+        Model\CityManagerInterface $cityManager
+    ) {
+        $this->countryManager = $countryManager;
+        $this->regionManager = $regionManager;
+        $this->cityManager = $cityManager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('country', 'entity', array(
                 'empty_value'   => 'Select country',
-                'class'         => 'DCSFormSelectCityFormFieldBundle:Country',
+                'class'         => $this->countryManager->getClass(),
                 'property'      => 'countryName',
+                'choices'       => $this->countryManager->findAll(),
                 'required'      => $options['country_required'],
                 'constraints'   => $this->getConstraints($options['country_required']),
             ))
         ;
 
-        $refreshState = function (FormInterface $form, $country = null) use ($options) {
+        $regionManager = $this->regionManager;
+        $cityManager = $this->cityManager;
+
+        $refreshRegion = function (FormInterface $form, $country = null) use ($options, $regionManager) {
             if ($country instanceof Country) {
                 $countryId = $country->getId();
             } elseif (is_numeric($country)) {
@@ -35,75 +61,63 @@ class SelectCityFormType extends AbstractType
             } else {
                 $countryId = 0;
             }
-            $form->add('state', 'entity', array(
-                'class'         => 'DCSFormSelectCityFormFieldBundle:State',
-                'empty_value'   => 'Select state',
-                'required'      => $options['state_required'],
-                'constraints'   => $this->getConstraints($options['state_required']),
-                'property'      => 'stateName',
-                'query_builder' => function (EntityRepository $repository) use ($countryId) {
-                    return $repository
-                        ->createQueryBuilder('s')
-                        ->innerJoin('DCSFormSelectCityFormFieldBundle:Country', 'c', \Doctrine\ORM\Query\Expr\Join::WITH, 's.countryCode = c.countryCode AND c.id = :c_id')
-                        ->setParameter('c_id', $countryId)
-                        ->orderBy('s.stateName', 'ASC');
-                }
+            $form->add('region', 'entity', array(
+                'empty_value'   => 'Select region',
+                'class'         => $regionManager->getClass(),
+                'property'      => 'regionName',
+                'choices'       => $regionManager->findAllByCountryId($countryId),
+                'required'      => $options['region_required'],
+                'constraints'   => $this->getConstraints($options['region_required']),
             ));
         };
 
-        $refreshCity = function (FormInterface $form, $state = null) use ($options) {
-            if ($state instanceof State) {
-                $stateId = $state->getId();
-            } elseif (is_numeric($state)) {
-                $stateId = $state;
+        $refreshCity = function (FormInterface $form, $region = null) use ($options, $cityManager) {
+            if ($region instanceof Region) {
+                $regionId = $region->getId();
+            } elseif (is_numeric($region)) {
+                $regionId = $region;
             } else {
-                $stateId = 0;
+                $regionId = 0;
             }
             $form->add('city', 'entity', array(
-                'class'         => 'DCSFormSelectCityFormFieldBundle:City',
                 'empty_value'   => 'Select city',
+                'class'         => $cityManager->getClass(),
+                'property'      => 'cityName',
+                'choices'       => $cityManager->findAllByRegionId($regionId),
                 'required'      => $options['city_required'],
                 'constraints'   => $this->getConstraints($options['city_required']),
-                'property'      => 'cityName',
-                'query_builder' => function (EntityRepository $repository) use ($stateId) {
-                    return $repository
-                        ->createQueryBuilder('c')
-                        ->innerJoin('DCSFormSelectCityFormFieldBundle:State', 's', \Doctrine\ORM\Query\Expr\Join::WITH, 'c.countryCode = s.countryCode AND c.stateCode = s.stateCode AND s.id = :s_id')
-                        ->setParameter('s_id', $stateId)
-                        ->orderBy('c.cityName', 'ASC');
-                }
             ));
         };
 
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($refreshState, $refreshCity) {
+            function (FormEvent $event) use ($refreshRegion, $refreshCity) {
                 $form = $event->getForm();
                 $data = $event->getData();
 
                 if ($data == null){
-                    $refreshState($form, null);
+                    $refreshRegion($form, null);
                     $refreshCity($form, null);
                 }
 
-                if ($data instanceof SelectData) {
-                    $refreshState($form, $data->getCountry());
-                    $refreshCity($form, $data->getState());
+                if ($data instanceof Model\SelectData) {
+                    $refreshRegion($form, $data->getCountry());
+                    $refreshCity($form, $data->getRegion());
                 }
             }
         );
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
-            function (FormEvent $event) use ($refreshState, $refreshCity) {
+            function (FormEvent $event) use ($refreshRegion, $refreshCity) {
                 $form = $event->getForm();
                 $data = $event->getData();
 
                 if (isset($data['country']) && !empty($data['country']))
-                    $refreshState($form, $data['country']);
+                    $refreshRegion($form, $data['country']);
 
-                if (isset($data['state']) && !empty($data['state']))
-                    $refreshCity($form, $data['state']);
+                if (isset($data['region']) && !empty($data['region']))
+                    $refreshCity($form, $data['region']);
             }
         );
     }
@@ -124,13 +138,13 @@ class SelectCityFormType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'DCS\Form\SelectCityFormFieldBundle\Model\SelectData',
             'country_required'  => true,
-            'state_required'    => true,
+            'region_required'   => true,
             'city_required'     => true,
         ));
 
         $resolver->setAllowedTypes(array(
             'country_required'  => 'bool',
-            'state_required'    => 'bool',
+            'region_required'   => 'bool',
             'city_required'     => 'bool',
         ));
     }

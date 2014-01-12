@@ -1,9 +1,9 @@
 {
     "name": "damianociarla/select-city-form-field-bundle",
-    "description": "",
+    "description": "This Bundle provides a new form field that renders three select 'Country, Region, City' for Symfony2",
     "type": "library",
     "keywords": [
-        "symfony2","country","state","city","field","form"
+        "symfony2","select","country","region","city","field","form"
     ],
     "license": "MIT",
     "homepage": "https://github.com/damianociarla/DCSSelectCityFormFieldBundle",
@@ -16,8 +16,7 @@
     ],
     "require": {
         "php": ">=5.3",
-        "symfony/symfony": "2.3.*",
-        "friendsofsymfony/jsrouting-bundle": "@stable"
+        "symfony/symfony": "2.3.*"
     },
     "autoload": {
         "psr-0": { "DCS\\Form\\SelectCityFormFieldBundle": "" }

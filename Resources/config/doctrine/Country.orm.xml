@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="DCS\Form\SelectCityFormFieldBundle\Entity\Country">
+
+        <field name="countryCode" column="country_code" type="string" length="2" nullable="false" />
+
+        <field name="countryName" column="country_name" type="string" nullable="false" />
+
+    </mapped-superclass>
+
+</doctrine-mapping>

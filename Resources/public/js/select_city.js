@@ -1,7 +1,9 @@
+window.select_region_base_url = null;
+window.select_city_base_url = null;
 window.select_city_instance = [];
-window.select_city = function (countryId, stateId, cityId) {
+window.select_city = function (countryId, regionId, cityId) {
     var countryElement = document.getElementById(countryId);
-    var stateElement = document.getElementById(stateId);
+    var regionElement = document.getElementById(regionId);
     var cityElement = document.getElementById(cityId);
 
     var loadJsonData = function (url, element, param) {
@@ -34,14 +36,14 @@ window.select_city = function (countryId, stateId, cityId) {
     };
 
     countryElement.onchange = function () {
-        var url = Routing.generate('dcs_form_select_city_form_field_api_states', {'countryId' : countryElement.options[countryElement.selectedIndex].value});
-        emptyOptionFromSelect(stateElement);
+        var url = window.select_region_base_url.replace("countryId", countryElement.options[countryElement.selectedIndex].value);
+        emptyOptionFromSelect(regionElement);
         emptyOptionFromSelect(cityElement);
-        loadJsonData(url, stateElement, 'stateName');
+        loadJsonData(url, regionElement, 'regionName');
     };
 
-    stateElement.onchange = function () {
-        var url = Routing.generate('dcs_form_select_city_form_field_api_cities', {'stateId' : stateElement.options[stateElement.selectedIndex].value});
+    regionElement.onchange = function () {
+        var url = window.select_city_base_url.replace("regionId", regionElement.options[regionElement.selectedIndex].value);
         emptyOptionFromSelect(cityElement);
         loadJsonData(url, cityElement, 'cityName');
     };
