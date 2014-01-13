@@ -1,7 +1,7 @@
 DCSSelectCityFormFieldBundle
 ============================
 
-The DCSSelectCityFormFieldBundle adds a new form field type `select_city` that renders three select (Country, Region, City) in your forms. Features include:
+The DCSSelectCityFormFieldBundle is a bundle for Symfony2 that adds a new form field type `select_city` that renders three selects (Country, Region, City) in your forms. Features include:
 
 * Ajax support without the use of external libraries
 * You can set a minimum security role to protect api
@@ -17,7 +17,7 @@ To install DCSSelectCityFormFieldBundle run the following command
 
 ### B) Enable the bundle
 
-Enable the required bundles in the kernel:
+To enable it add the bundle instance in the kernel:
 
 	<?php
 	// app/AppKernel.php
@@ -32,8 +32,7 @@ Enable the required bundles in the kernel:
 
 ## 2) Create your Country, Region and City classes
 
-In this first release DCSSelectCityFormFieldBundle supports only Doctrine ORM. However, you must provide a concrete Country, Region and City class.
-You must extend the abstract entities provided by the bundle and creating the appropriate mappings.
+In this first release DCSSelectCityFormFieldBundle supports only Doctrine ORM. You must provide a concrete Country, Region and City class. You must extend the abstract entities provided by the bundle and creating the appropriate mapping.
 
 ### Country
 
@@ -136,7 +135,7 @@ and include the javascript in your template:
 
 ## 6) Use the new form field
 
-To include the new form field add a new field to builder object:
+To include the new field in a form use the following code:
 
 	$builder->add('address', 'select_city')
 	
@@ -150,7 +149,7 @@ You have the following options:
 	
 ## After submit
 
-When the form is submitted the bundle provides an object that represent the three select. The object is: `DCS\Form\SelectCityFormFieldBundle\Model\SelectData`
+When the form is submitted the bundle provides an object that represent the three selects. The object is: `DCS\Form\SelectCityFormFieldBundle\Model\SelectData`
 
 ## A complete example
 
