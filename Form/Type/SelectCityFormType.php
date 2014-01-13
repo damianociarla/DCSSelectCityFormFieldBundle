@@ -41,7 +41,8 @@ class SelectCityFormType extends AbstractType
     {
         $builder
             ->add('country', 'entity', array(
-                'empty_value'   => 'Select country',
+                'label'         => 'form.label.country',
+                'empty_value'   => 'form.label.country_empty',
                 'class'         => $this->countryManager->getClass(),
                 'property'      => 'countryName',
                 'choices'       => $this->countryManager->findAll(),
@@ -62,7 +63,8 @@ class SelectCityFormType extends AbstractType
                 $countryId = 0;
             }
             $form->add('region', 'entity', array(
-                'empty_value'   => 'Select region',
+                'label'         => 'form.label.region',
+                'empty_value'   => 'form.label.region_empty',
                 'class'         => $regionManager->getClass(),
                 'property'      => 'regionName',
                 'choices'       => $regionManager->findAllByCountryId($countryId),
@@ -80,7 +82,8 @@ class SelectCityFormType extends AbstractType
                 $regionId = 0;
             }
             $form->add('city', 'entity', array(
-                'empty_value'   => 'Select city',
+                'label'         => 'form.label.city',
+                'empty_value'   => 'form.label.city_empty',
                 'class'         => $cityManager->getClass(),
                 'property'      => 'cityName',
                 'choices'       => $cityManager->findAllByRegionId($regionId),
@@ -136,16 +139,17 @@ class SelectCityFormType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'DCS\Form\SelectCityFormFieldBundle\Model\SelectData',
-            'country_required'  => true,
-            'region_required'   => true,
-            'city_required'     => true,
+            'data_class'            => 'DCS\Form\SelectCityFormFieldBundle\Model\SelectData',
+            'translation_domain'    => 'DCSFormSelectCityFormFieldBundle',
+            'country_required'      => true,
+            'region_required'       => true,
+            'city_required'         => true,
         ));
 
         $resolver->setAllowedTypes(array(
-            'country_required'  => 'bool',
-            'region_required'   => 'bool',
-            'city_required'     => 'bool',
+            'country_required'      => 'bool',
+            'region_required'       => 'bool',
+            'city_required'         => 'bool',
         ));
     }
 

@@ -151,3 +151,192 @@ You have the following options:
 ## After submit
 
 When the form is submitted the bundle provides an object that represent the three select. The object is: `DCS\Form\SelectCityFormFieldBundle\Model\SelectData`
+
+## A complete example
+
+Example of an entity and a form that represents the information returned by the new form field:
+
+### Address entity
+
+    <?php
+	// src/MyProject/MyBundle/Entity/Address.php
+	
+    namespace MyProject\MyBundle\Entity;
+
+    use Doctrine\ORM\Mapping as ORM;
+
+    /**
+     * @ORM\Entity
+     */
+    class Address
+    {
+        /**
+         * @ORM\ManyToOne(targetEntity="MyProject\MyBundle\Entity\Country")
+         * @ORM\JoinColumn(name="country_id", referencedColumnName="id", nullable=true)
+         */
+        protected $country;
+
+        /**
+         * @ORM\ManyToOne(targetEntity="MyProject\MyBundle\Entity\Region")
+         * @ORM\JoinColumn(name="region_id", referencedColumnName="id", nullable=true)
+         */
+        protected $region;
+
+        /**
+         * @ORM\ManyToOne(targetEntity="MyProject\MyBundle\Entity\City")
+         * @ORM\JoinColumn(name="city_id", referencedColumnName="id", nullable=true)
+         */
+        protected $city;
+
+        /**
+         * @var \DCS\Form\SelectCityFormFieldBundle\Model\SelectData
+         */
+        protected $selectData;
+
+        /**
+         * Set country
+         *
+         * @param \DCS\Form\SelectCityFormFieldBundle\Model\CountryInterface $country
+         * @return Address
+         */
+        public function setCountry(\DCS\Form\SelectCityFormFieldBundle\Model\CountryInterface $country = null)
+        {
+            $this->country = $country;
+
+            return $this;
+        }
+
+        /**
+         * Get country
+         *
+         * @return \DCS\Form\SelectCityFormFieldBundle\Model\CountryInterface
+         */
+        public function getCountry()
+        {
+            return $this->country;
+        }
+
+        /**
+         * Set region
+         *
+         * @param \DCS\Form\SelectCityFormFieldBundle\Model\RegionInterface $region
+         * @return Address
+         */
+        public function setRegion(\DCS\Form\SelectCityFormFieldBundle\Model\RegionInterface $region = null)
+        {
+            $this->region = $region;
+
+            return $this;
+        }
+
+        /**
+         * Get region
+         *
+         * @return \DCS\Form\SelectCityFormFieldBundle\Model\RegionInterface
+         */
+        public function getRegion()
+        {
+            return $this->region;
+        }
+
+        /**
+         * Set city
+         *
+         * @param \DCS\Form\SelectCityFormFieldBundle\Model\CityInterface $city
+         * @return StandardAddress
+         */
+        public function setCity(\DCS\Form\SelectCityFormFieldBundle\Model\CityInterface $city = null)
+        {
+            $this->city = $city;
+
+            return $this;
+        }
+
+        /**
+         * Get city
+         *
+         * @return \DCS\Form\SelectCityFormFieldBundle\Model\CityInterface
+         */
+        public function getCity()
+        {
+            return $this->city;
+        }
+
+        /**
+         * Set selectData
+         *
+         * @param \DCS\Form\SelectCityFormFieldBundle\Model\SelectData $selectData
+         * @return Address
+         */
+        public function setSelectData(\DCS\Form\SelectCityFormFieldBundle\Model\SelectData $selectData)
+        {
+            $this->setCountry($selectData->getCountry());
+            $this->setRegion($selectData->getRegion());
+            $this->setCity($selectData->getCity());
+
+            $this->selectData = $selectData;
+
+            return $this;
+        }
+
+        /**
+         * Get selectData
+         *
+         * @return \DCS\Form\SelectCityFormFieldBundle\Model\SelectData
+         */
+        public function getSelectData()
+        {
+            $selectData = new \DCS\Form\SelectCityFormFieldBundle\Model\SelectData();
+            $selectData->setCountry($this->getCountry());
+            $selectData->setRegion($this->getRegion());
+            $selectData->setCity($this->getCity());
+
+            return $selectData;
+        }
+    }
+    
+### Address form
+
+    <?php
+	// src/MyProject/MyBundle/Form/Type/Address.php
+	
+    namespace MyProject\MyBundle\Form\Type;
+
+    use Symfony\Component\Form\AbstractType;
+    use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+    use Symfony\Component\Form\FormBuilderInterface;
+
+    class AddressFormType extends AbstractType
+    {
+        public function buildForm(FormBuilderInterface $builder, array $options)
+        {
+            $builder
+                ->add('selectData', 'select_city', array(
+                    'country_required'  => $options['country_required'],
+                    'state_required'    => $options['state_required'],
+                    'city_required'     => $options['city_required'],
+                ))
+            ;
+        }
+
+        public function setDefaultOptions(OptionsResolverInterface $resolver)
+        {
+            $resolver->setDefaults(array(
+                'data_class'                => 'MyProject\MyBundle\Entity\Address',
+                'country_required'          => true,
+                'state_required'            => true,
+                'city_required'             => true,
+            ));
+
+            $resolver->setAllowedTypes(array(
+                'country_required'          => 'bool',
+                'state_required'            => 'bool',
+                'city_required'             => 'bool',
+            ));
+        }
+
+        public function getName()
+        {
+            return 'address';
+        }
+    }
