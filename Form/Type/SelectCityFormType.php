@@ -104,8 +104,8 @@ class SelectCityFormType extends AbstractType
                 }
 
                 if ($data instanceof Model\SelectData) {
-                    $refreshRegion($form, $data->getCountry());
-                    $refreshCity($form, $data->getRegion());
+                    $refreshRegion($form, $data->getCountry()->getId());
+                    $refreshCity($form, $data->getRegion()->getId());
                 }
             }
         );
