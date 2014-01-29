@@ -54,39 +54,25 @@ class SelectCityFormType extends AbstractType
         $regionManager = $this->regionManager;
         $cityManager = $this->cityManager;
 
-        $refreshRegion = function (FormInterface $form, $country = null) use ($options, $regionManager) {
-            if ($country instanceof Country) {
-                $countryId = $country->getId();
-            } elseif (is_numeric($country)) {
-                $countryId = $country;
-            } else {
-                $countryId = 0;
-            }
+        $refreshRegion = function (FormInterface $form, $countryId = null) use ($options, $regionManager) {
             $form->add('region', 'entity', array(
                 'label'         => 'form.label.region',
                 'empty_value'   => 'form.label.region_empty',
                 'class'         => $regionManager->getClass(),
                 'property'      => 'regionName',
-                'choices'       => $regionManager->findAllByCountryId($countryId),
+                'choices'       => null === $countryId ? array() : $regionManager->findAllByCountryId($countryId),
                 'required'      => $options['region_required'],
                 'constraints'   => $this->getConstraints($options['region_required']),
             ));
         };
 
-        $refreshCity = function (FormInterface $form, $region = null) use ($options, $cityManager) {
-            if ($region instanceof Region) {
-                $regionId = $region->getId();
-            } elseif (is_numeric($region)) {
-                $regionId = $region;
-            } else {
-                $regionId = 0;
-            }
+        $refreshCity = function (FormInterface $form, $regionId = null) use ($options, $cityManager) {
             $form->add('city', 'entity', array(
                 'label'         => 'form.label.city',
                 'empty_value'   => 'form.label.city_empty',
                 'class'         => $cityManager->getClass(),
                 'property'      => 'cityName',
-                'choices'       => $cityManager->findAllByRegionId($regionId),
+                'choices'       => null === $regionId ? array() : $cityManager->findAllByRegionId($regionId),
                 'required'      => $options['city_required'],
                 'constraints'   => $this->getConstraints($options['city_required']),
             ));
@@ -98,15 +84,20 @@ class SelectCityFormType extends AbstractType
                 $form = $event->getForm();
                 $data = $event->getData();
 
-                if ($data == null){
-                    $refreshRegion($form, null);
-                    $refreshCity($form, null);
-                }
+                $countryId = null;
+                $regionId  = null;
 
                 if ($data instanceof Model\SelectData) {
-                    $refreshRegion($form, $data->getCountry()->getId());
-                    $refreshCity($form, $data->getRegion()->getId());
+                    if (null !== $data->getCountry() && null !== $data->getCountry()->getId()) {
+                        $countryId = $data->getCountry()->getId();
+                    }
+                    if (null !== $data->getRegion() && null !== $data->getRegion()->getId()) {
+                        $regionId = $data->getRegion()->getId();
+                    }
                 }
+
+                $refreshRegion($form, $countryId);
+                $refreshCity($form, $regionId);
             }
         );
 
