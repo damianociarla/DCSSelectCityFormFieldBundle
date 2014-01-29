@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="form.label.country">
+                <source>form.label.country</source>
+                <target>Stato</target>
+            </trans-unit>
+            <trans-unit id="form.label.country_empty">
+                <source>form.label.country_empty</source>
+                <target>Seleziona lo stato</target>
+            </trans-unit>
+            <trans-unit id="form.label.region">
+                <source>form.label.region</source>
+                <target>Regione</target>
+            </trans-unit>
+            <trans-unit id="form.label.region_empty">
+                <source>form.label.region_empty</source>
+                <target>Seleziona una regione</target>
+            </trans-unit>
+            <trans-unit id="form.label.city">
+                <source>form.label.city</source>
+                <target>Città</target>
+            </trans-unit>
+            <trans-unit id="form.label.city_empty">
+                <source>form.label.city_empty</source>
+                <target>Seleziona una città</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
