@@ -2,15 +2,17 @@
 {% spaceless %}
     {{ form_widget(form) }}
     <script type="text/javascript">
-    window.onload = function () {
-        if (window.select_region_base_url === null) {
-            window.select_region_base_url = '{{ path("dcs_select_city_form_field_api_regions", {'countryId': 'countryId'}) }}';
+        window.onload = function () {
+            if (window.select_region_base_url === null) {
+                window.select_region_base_url = '{{ path("dcs_select_city_form_field_api_regions", {'countryId': 'countryId'}) }}';
+            }
+            if (window.select_city_base_url === null) {
+                window.select_city_base_url = '{{ path("dcs_select_city_form_field_api_cities", {'regionId': 'regionId'}) }}';
+            }
+            var callbackCountry = typeof {{ form.vars.id ~ '_' ~ callback_country }} != 'undefined' ? {{ form.vars.id ~ '_' ~ callback_country }} : null;
+            var callbackRegion = typeof {{ form.vars.id ~ '_' ~ callback_region }} != 'undefined' ? {{ form.vars.id ~ '_' ~ callback_region }} : null;
+            window.select_city_instance.push(new window.select_city('{{ form.country.vars.id }}', '{{ form.region.vars.id }}', '{{ form.city.vars.id }}', callbackCountry, callbackRegion));
         }
-        if (window.select_city_base_url === null) {
-            window.select_city_base_url = '{{ path("dcs_select_city_form_field_api_cities", {'regionId': 'regionId'}) }}';
-        }
-        window.select_city_instance.push(new window.select_city('{{ form.country.vars.id }}', '{{ form.region.vars.id }}', '{{ form.city.vars.id }}'));
-    }
     </script>
 {% endspaceless %}
 {% endblock %}

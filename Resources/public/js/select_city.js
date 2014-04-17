@@ -1,12 +1,12 @@
 window.select_region_base_url = null;
 window.select_city_base_url = null;
 window.select_city_instance = [];
-window.select_city = function (countryId, regionId, cityId) {
+window.select_city = function (countryId, regionId, cityId, callbackCountry, callbackRegion) {
     var countryElement = document.getElementById(countryId);
     var regionElement = document.getElementById(regionId);
     var cityElement = document.getElementById(cityId);
 
-    var loadJsonData = function (url, element, param) {
+    var loadJsonData = function (url, element, param, type) {
         var xmlhttp;
         if (window.XMLHttpRequest) {
             xmlhttp = new XMLHttpRequest();
@@ -24,6 +24,18 @@ window.select_city = function (countryId, regionId, cityId) {
                     option.value = info.id;
                     element.appendChild(option);
                 }
+                switch (type) {
+                    case 'country':
+                        if (callbackCountry !== null) {
+                            callbackCountry(data, element);
+                        }
+                        break;
+                    case 'region':
+                        if (callbackRegion !== null) {
+                            callbackRegion(data, element);
+                        }
+                        break;
+                }
             }
         };
 
@@ -39,12 +51,12 @@ window.select_city = function (countryId, regionId, cityId) {
         var url = window.select_region_base_url.replace("countryId", countryElement.options[countryElement.selectedIndex].value);
         emptyOptionFromSelect(regionElement);
         emptyOptionFromSelect(cityElement);
-        loadJsonData(url, regionElement, 'regionName');
+        loadJsonData(url, regionElement, 'regionName', 'country');
     };
 
     regionElement.onchange = function () {
         var url = window.select_city_base_url.replace("regionId", regionElement.options[regionElement.selectedIndex].value);
         emptyOptionFromSelect(cityElement);
-        loadJsonData(url, cityElement, 'cityName');
+        loadJsonData(url, cityElement, 'cityName', 'region');
     };
 };

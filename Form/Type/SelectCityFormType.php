@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormView;
 use DCS\Form\SelectCityFormFieldBundle\Model;
 
 class SelectCityFormType extends AbstractType
@@ -35,6 +36,14 @@ class SelectCityFormType extends AbstractType
         $this->countryManager = $countryManager;
         $this->regionManager = $regionManager;
         $this->cityManager = $cityManager;
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars = array_merge($view->vars, array(
+            'callback_country'  => $options['callback_country'],
+            'callback_region'   => $options['callback_region'],
+        ));
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -135,12 +144,16 @@ class SelectCityFormType extends AbstractType
             'country_required'      => true,
             'region_required'       => true,
             'city_required'         => true,
+            'callback_country'      => 'callbackCountry',
+            'callback_region'       => 'callbackRegion',
         ));
 
         $resolver->setAllowedTypes(array(
             'country_required'      => 'bool',
             'region_required'       => 'bool',
             'city_required'         => 'bool',
+            'callback_country'      => 'string',
+            'callback_region'       => 'string',
         ));
     }
 
